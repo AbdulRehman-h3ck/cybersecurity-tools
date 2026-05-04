@@ -1,7 +1,7 @@
 name: Build Windows Executable
 
 on:
-  workflow_dispatch: # Is se aap jab chahe button daba kar EXE bana sakte hain
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -23,7 +23,6 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        # Hum specify kar rahe hain ke android-threat-intel folder ke andar jao
         cd android-threat-intel
         pyinstaller --noconsole --onefile --name "APK_Forensic_Lab" gui_tool.py
 
