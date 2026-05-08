@@ -1,24 +1,21 @@
-from androguard.core.bytecodes.apk import APK
 import os
+from androguard.apk import APK  # Naya Modern Import
 
 def analyze_apk(apk_path):
     try:
-        # Path ko normalize karna (Windows/Linux compatibility)
+        # Path normalize karna
         clean_path = os.path.normpath(apk_path)
         
-        # APK load karna
+        # Naye version mein APK load karne ka tareeqa
         a = APK(clean_path)
         
-        # Data extract karna (Safe method)
-        package_name = a.get_package() if a.get_package() else "Unknown"
-        version = a.get_androidversion_name() if a.get_androidversion_name() else "N/A"
-        permissions = a.get_permissions()
+        package_name = a.package_name if a.package_name else "Unknown"
+        version = a.version_name if a.version_name else "N/A"
+        permissions = a.permissions
         
-        # Risk Analysis Logic
         risk_score = 0
         flags = []
         
-        # Dangerous Permissions Check
         dangerous_list = [
             "android.permission.SEND_SMS", 
             "android.permission.RECORD_AUDIO", 
@@ -31,7 +28,6 @@ def analyze_apk(apk_path):
                 risk_score += 25
                 flags.append(f"Dangerous Permission: {p.split('.')[-1]}")
 
-        # Final Verdict
         if risk_score >= 75:
             verdict = "⚠️ CRITICAL - MALICIOUS ACTIVITY LIKELY"
         elif risk_score >= 25:
@@ -48,11 +44,10 @@ def analyze_apk(apk_path):
         }
 
     except Exception as e:
-        # Agar analysis fail ho jaye toh ye return karega
         return {
             'package_name': "ERROR",
             'version': "N/A",
             'risk_score': 0,
             'verdict': f"Analysis Failed: {str(e)}",
-            'flags': ["Make sure it is a valid APK file."]
+            'flags': ["Invalid APK or Library mismatch."]
         }
