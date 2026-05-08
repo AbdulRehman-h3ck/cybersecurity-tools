@@ -1,74 +1,65 @@
 import sys
 import os
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
 import threading
 from analyzer import analyze_apk
 
-# --- CRASH FIX FOR PYINSTALLER ---
-if sys.stdout is None:
-    sys.stdout = open(os.devnull, "w")
-if sys.stderr is None:
-    sys.stderr = open(os.devnull, "w")
+# --- PYINSTALLER FIX: Redirect output to avoid crash ---
+if sys.stdout is None: sys.stdout = open(os.devnull, "w")
+if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 
 class APKAnalyzerGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Android Threat Intel - Forensic Lab")
-        self.root.geometry("700x550")
-        self.root.configure(bg="#1e1e1e")
+        self.root.title("Forensic Lab v1.0")
+        self.root.geometry("650x500")
+        self.root.configure(bg="#121212")
 
-        self.title_label = tk.Label(root, text="APK FORENSIC INTELLIGENCE", font=("Courier", 18, "bold"), fg="#00ff00", bg="#1e1e1e")
-        self.title_label.pack(pady=20)
+        # UI Styling
+        tk.Label(root, text="APK THREAT ANALYZER", font=("Arial", 16, "bold"), fg="#00ff00", bg="#121212").pack(pady=20)
+        
+        self.btn_browse = tk.Button(root, text="SELECT APK", command=self.select_file, width=20, bg="#333", fg="white")
+        self.btn_browse.pack(pady=10)
 
-        self.btn_select = tk.Button(root, text="BROWSE APK", command=self.select_file, font=("Arial", 10, "bold"), bg="#444", fg="white", width=20)
-        self.btn_select.pack(pady=10)
+        self.lbl_status = tk.Label(root, text="Waiting for input...", fg="#888", bg="#121212")
+        self.lbl_status.pack()
 
-        self.file_label = tk.Label(root, text="No file selected", fg="#aaa", bg="#1e1e1e")
-        self.file_label.pack()
+        self.console = tk.Text(root, height=12, width=70, bg="black", fg="#00ff00", font=("Consolas", 10))
+        self.console.pack(pady=20, padx=20)
 
-        self.btn_analyze = tk.Button(root, text="START ANALYSIS", command=self.start_thread, font=("Arial", 12, "bold"), bg="#008cba", fg="white", width=25, state="disabled")
-        self.btn_analyze.pack(pady=20)
+        self.btn_run = tk.Button(root, text="START SCAN", command=self.run_task, state="disabled", bg="#005f73", fg="white", font=("bold"))
+        self.btn_run.pack(pady=10)
 
-        self.console_output = tk.Text(root, height=15, width=80, bg="black", fg="#33ff33", font=("Consolas", 10))
-        self.console_output.pack(pady=10, padx=20)
+        self.file_path = ""
 
-        self.selected_path = ""
-
-    def log(self, message):
-        self.console_output.insert(tk.END, message + "\n")
-        self.console_output.see(tk.END)
+    def log(self, text):
+        self.console.insert(tk.END, text + "\n")
+        self.console.see(tk.END)
 
     def select_file(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Android Packages", "*.apk")])
-        if file_path:
-            self.selected_path = os.path.normpath(file_path)
-            self.file_label.config(text=os.path.basename(self.selected_path), fg="#00ff00")
-            self.btn_analyze.config(state="normal")
-            self.log(f"[+] Selected: {os.path.basename(self.selected_path)}")
+        path = filedialog.askopenfilename(filetypes=[("APK Files", "*.apk")])
+        if path:
+            self.file_path = os.path.normpath(path)
+            self.lbl_status.config(text=os.path.basename(self.file_path), fg="#00ff00")
+            self.btn_run.config(state="normal")
+            self.log(f"[+] Loaded: {os.path.basename(self.file_path)}")
 
-    def start_thread(self):
-        self.btn_analyze.config(state="disabled")
-        self.console_output.delete(1.0, tk.END)
-        self.log("[!] Starting Analysis Engine...")
-        threading.Thread(target=self.run_analysis, daemon=True).start()
+    def run_task(self):
+        self.btn_run.config(state="disabled")
+        self.console.delete(1.0, tk.END)
+        self.log("[!] Starting Analysis...")
+        threading.Thread(target=self.process, daemon=True).start()
 
-    def run_analysis(self):
-        try:
-            results = analyze_apk(self.selected_path)
-            self.log(f"[*] Package: {results['package_name']}")
-            self.log(f"[*] Version: {results['version']}")
-            self.log(f"[*] Risk Score: {results['risk_score']}/100")
-            self.log("-" * 50)
-            self.log(f"VERDICT: {results['verdict']}")
-            self.log("-" * 50)
-            for flag in results['flags']:
-                self.log(f" - {flag}")
-        except Exception as e:
-            self.log(f"[ERROR]: {str(e)}")
-        finally:
-            self.btn_analyze.config(state="normal")
-            self.log("\n[+] Done.")
+    def process(self):
+        res = analyze_apk(self.file_path)
+        self.log(f"[*] Package: {res['package_name']}")
+        self.log(f"[*] Score: {res['risk_score']}/100")
+        self.log("-" * 40)
+        self.log(f"RESULT: {res['verdict']}")
+        self.log("-" * 40)
+        for f in res['flags']: self.log(f" - {f}")
+        self.btn_run.config(state="normal")
 
 if __name__ == "__main__":
     root = tk.Tk()
