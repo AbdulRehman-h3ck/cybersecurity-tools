@@ -1,7 +1,7 @@
 name: Build Windows Executable
 
 on:
-  workflow_dispatch: # Is se aap manually 'Actions' tab mein ja kar button daba saktay hain
+  workflow_dispatch: # Is se Actions tab mein button nazar ayega
 
 jobs:
   build:
@@ -23,9 +23,13 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        # Hum 'android-threat-intel' folder mein ja kar build shuru karenge
+        # Folder ke andar jana zaroori hai
         cd android-threat-intel
-        # --collect-all androguard saari zaroori XML aur resource files ko EXE mein pack kar dega
+        
+        # Final Build Command
+        # --noconsole: Background terminal nahi khulega
+        # --onefile: Sab kuch aik hi exe mein pack hoga
+        # --collect-all: Androguard ki saari internal files (public.xml) shamil hongi
         pyinstaller --noconsole --onefile --collect-all androguard --name "APK_Forensic_Lab" gui_tool.py
 
     - name: Upload Artifact
