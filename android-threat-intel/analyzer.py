@@ -1,17 +1,19 @@
 import os
-from androguard.apk import APK  # Naya Modern Import
+import androguard
+# Naya tareeqa taake PyInstaller ko dhokla na ho
+from androguard.apk import APK 
 
 def analyze_apk(apk_path):
     try:
-        # Path normalize karna
         clean_path = os.path.normpath(apk_path)
         
-        # Naye version mein APK load karne ka tareeqa
+        # Latest version 4.x check
         a = APK(clean_path)
         
-        package_name = a.package_name if a.package_name else "Unknown"
-        version = a.version_name if a.version_name else "N/A"
-        permissions = a.permissions
+        # Naye version ke attributes use karein
+        package_name = getattr(a, 'package_name', "Unknown")
+        version = getattr(a, 'version_name', "N/A")
+        permissions = getattr(a, 'permissions', [])
         
         risk_score = 0
         flags = []
@@ -49,5 +51,5 @@ def analyze_apk(apk_path):
             'version': "N/A",
             'risk_score': 0,
             'verdict': f"Analysis Failed: {str(e)}",
-            'flags': ["Invalid APK or Library mismatch."]
+            'flags': ["Try a different APK or check library path."]
         }
