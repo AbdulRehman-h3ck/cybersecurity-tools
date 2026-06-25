@@ -2,8 +2,7 @@ name: Stable Build EXE
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, master ]
+
 
 jobs:
   build:
