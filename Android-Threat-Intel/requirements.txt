@@ -1,12 +1,14 @@
-androguard==3.3.5
 customtkinter
-fpdf
 matplotlib
+scikit-learn
+fpdf
+curl_cffi
+lxml
+androguard==3.3.5
 requests
 python-dotenv
 yara-python
 pyvis
-scikit-learn
 numpy
 g4f
 nest_asyncio
