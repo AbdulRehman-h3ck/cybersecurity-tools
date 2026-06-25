@@ -1,1 +1,12 @@
-
+androguard==3.3.5
+customtkinter
+fpdf
+matplotlib
+requests
+python-dotenv
+yara-python
+pyvis
+scikit-learn
+numpy
+g4f
+nest_asyncio
