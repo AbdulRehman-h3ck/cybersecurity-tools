@@ -1,0 +1,12 @@
+customtkinter
+matplotlib
+androguard
+yara-python
+scikit-learn
+fpdf
+pyvis
+g4f
+curl_cffi
+nest_asyncio
+lxml
+requests

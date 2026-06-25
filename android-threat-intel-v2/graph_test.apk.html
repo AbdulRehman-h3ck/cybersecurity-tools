@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #121212;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#FF3B30", "font": {"color": "white"}, "id": "test.apk", "label": "\u26a0\ufe0f test.apk", "shape": "hexagon", "size": 40, "title": "Target APK"}, {"color": "#FF9500", "font": {"color": "white"}, "id": "Permission_android.permission.VIBRATE", "label": "\ud83d\udd11 android.permission.VIBRATE", "shape": "triangle", "size": 20, "title": "Permission: android.permission.VIBRATE"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://android.googlesource.com/toolchain/llvm-project", "label": "\ud83c\udf10 https://android.googlesourc...", "shape": "diamond", "size": 20, "title": "URL: https://android.googlesource.com/toolchain/llvm-project"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://www.w3.org/XML/1998/namespaceNamespacedart-codespacedart-oldspacenew", "label": "\ud83c\udf10 http://www.w3.org/XML/1998/...", "shape": "diamond", "size": 20, "title": "URL: http://www.w3.org/XML/1998/namespaceNamespacedart-codespacedart-oldspacenew"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.8U", "label": "\ud83c\udf10 https://flutter.dev/docs/re...", "shape": "diamond", "size": 20, "title": "URL: https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.8U"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/belelaritra/Neumorphic_Calculator8U", "label": "\ud83c\udf10 https://github.com/belelari...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/belelaritra/Neumorphic_Calculator8U"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.defaultStackTracegetSpanForPosition-9stretch_debugPrintStopwatch", "label": "\ud83c\udf10 https://flutter.dev/docs/re...", "shape": "diamond", "size": 20, "title": "URL: https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.defaultStackTracegetSpanForPosition-9stretch_debugPrintStopwatch"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.htmlb", "label": "\ud83c\udf10 https://api.flutter.dev/flu...", "shape": "diamond", "size": 20, "title": "URL: https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.htmlb"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/flutter/flutter/issues.Failed", "label": "\ud83c\udf10 https://github.com/flutter/...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/flutter/flutter/issues.Failed"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://www.unicode.org/copyright.html", "label": "\ud83c\udf10 http://www.unicode.org/copy...", "shape": "diamond", "size": 20, "title": "URL: http://www.unicode.org/copyright.html"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/flutter/flutter/issues/2897", "label": "\ud83c\udf10 https://github.com/flutter/...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/flutter/flutter/issues/2897"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/belelaritra/Neumorphic_Calculatortheme_modepropertyValueVerticalDragGestureRecognizer.joinIndexedSlotErrorSummaryThe", "label": "\ud83c\udf10 https://github.com/belelari...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/belelaritra/Neumorphic_Calculatortheme_modepropertyValueVerticalDragGestureRecognizer.joinIndexedSlotErrorSummaryThe"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://api.flutter.dev/flutter/material/Scaffold/of.html8Uv.", "label": "\ud83c\udf10 https://api.flutter.dev/flu...", "shape": "diamond", "size": 20, "title": "URL: https://api.flutter.dev/flutter/material/Scaffold/of.html8Uv."}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://developer.android.com/guide/topics/permissions/overview", "label": "\ud83c\udf10 https://developer.android.c...", "shape": "diamond", "size": 20, "title": "URL: https://developer.android.com/guide/topics/permissions/overview"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/belelaritra/Neumorphic_Calculator8Uzutheme_mode8U", "label": "\ud83c\udf10 https://github.com/belelari...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/belelaritra/Neumorphic_Calculator8Uzutheme_mode8U"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://fontello.comCopyright", "label": "\ud83c\udf10 http://fontello.comCopyright", "shape": "diamond", "size": 20, "title": "URL: http://fontello.comCopyright"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://www.w3.org/XML/1998/namespacehttp", "label": "\ud83c\udf10 http://www.w3.org/XML/1998/...", "shape": "diamond", "size": 20, "title": "URL: http://www.w3.org/XML/1998/namespacehttp"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/flutter/flutter/issues.Could", "label": "\ud83c\udf10 https://github.com/flutter/...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/flutter/flutter/issues.Could"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://api.flutter.dev/flutter/material/Scaffold/of.html_depth", "label": "\ud83c\udf10 https://api.flutter.dev/flu...", "shape": "diamond", "size": 20, "title": "URL: https://api.flutter.dev/flutter/material/Scaffold/of.html_depth"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.html8U", "label": "\ud83c\udf10 https://api.flutter.dev/flu...", "shape": "diamond", "size": 20, "title": "URL: https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.html8U"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://schemas.android.com/apk/res/androiditem", "label": "\ud83c\udf10 http://schemas.android.com/...", "shape": "diamond", "size": 20, "title": "URL: http://schemas.android.com/apk/res/androiditem"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://fontello.com", "label": "\ud83c\udf10 http://fontello.com", "shape": "diamond", "size": 20, "title": "URL: http://fontello.com"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://schemas.android.com/apk/res/androidhttpsintent", "label": "\ud83c\udf10 http://schemas.android.com/...", "shape": "diamond", "size": 20, "title": "URL: http://schemas.android.com/apk/res/androidhttpsintent"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://www.w3.org/2000/xmlns/", "label": "\ud83c\udf10 http://www.w3.org/2000/xmlns/", "shape": "diamond", "size": 20, "title": "URL: http://www.w3.org/2000/xmlns/"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/flutter/flutter/issues.Interrupt", "label": "\ud83c\udf10 https://github.com/flutter/...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/flutter/flutter/issues.Interrupt"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://www.w3.org/Style/CSS/Test/Fonts/Ahem/", "label": "\ud83c\udf10 https://www.w3.org/Style/CS...", "shape": "diamond", "size": 20, "title": "URL: https://www.w3.org/Style/CSS/Test/Fonts/Ahem/"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/dart-lang/sdk/blob/master/runtime/docs/compiler/aot/entry_point_pragma.md", "label": "\ud83c\udf10 https://github.com/dart-lan...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/dart-lang/sdk/blob/master/runtime/docs/compiler/aot/entry_point_pragma.md"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://github.com/belelaritra/Neumorphic_Calculatordart.mathnavigationRailThemeClosedCaptionToggleiterableSemanticsFlag.isFocusedlii_doSerialization", "label": "\ud83c\udf10 https://github.com/belelari...", "shape": "diamond", "size": 20, "title": "URL: https://github.com/belelaritra/Neumorphic_Calculatordart.mathnavigationRailThemeClosedCaptionToggleiterableSemanticsFlag.isFocusedlii_doSerialization"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_http://www.w3.org/2000/xmlns/isolates///../JOIN_TYPE", "label": "\ud83c\udf10 http://www.w3.org/2000/xmln...", "shape": "diamond", "size": 20, "title": "URL: http://www.w3.org/2000/xmlns/isolates///../JOIN_TYPE"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_https://www.microsoft.com/en-us/research/wp-content/uploads/2005/01/p1000-loop.pdf", "label": "\ud83c\udf10 https://www.microsoft.com/e...", "shape": "diamond", "size": 20, "title": "URL: https://www.microsoft.com/en-us/research/wp-content/uploads/2005/01/p1000-loop.pdf"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_5.5.5.5", "label": "\ud83c\udf10 5.5.5.5", "shape": "diamond", "size": 20, "title": "URL: 5.5.5.5"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_3.9.7.5", "label": "\ud83c\udf10 3.9.7.5", "shape": "diamond", "size": 20, "title": "URL: 3.9.7.5"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_9.8.7.5", "label": "\ud83c\udf10 9.8.7.5", "shape": "diamond", "size": 20, "title": "URL: 9.8.7.5"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_47.9.47.3", "label": "\ud83c\udf10 47.9.47.3", "shape": "diamond", "size": 20, "title": "URL: 47.9.47.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_4.4.4.3", "label": "\ud83c\udf10 4.4.4.3", "shape": "diamond", "size": 20, "title": "URL: 4.4.4.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_9.7.6.5", "label": "\ud83c\udf10 9.7.6.5", "shape": "diamond", "size": 20, "title": "URL: 9.7.6.5"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_9.10.11.12", "label": "\ud83c\udf10 9.10.11.12", "shape": "diamond", "size": 20, "title": "URL: 9.10.11.12"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_5.6.7.8", "label": "\ud83c\udf10 5.6.7.8", "shape": "diamond", "size": 20, "title": "URL: 5.6.7.8"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_1.1.1.1", "label": "\ud83c\udf10 1.1.1.1", "shape": "diamond", "size": 20, "title": "URL: 1.1.1.1"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_8.8.8.9", "label": "\ud83c\udf10 8.8.8.9", "shape": "diamond", "size": 20, "title": "URL: 8.8.8.9"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_47.4.4.3", "label": "\ud83c\udf10 47.4.4.3", "shape": "diamond", "size": 20, "title": "URL: 47.4.4.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_17.18.19.20", "label": "\ud83c\udf10 17.18.19.20", "shape": "diamond", "size": 20, "title": "URL: 17.18.19.20"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_13.14.15.16", "label": "\ud83c\udf10 13.14.15.16", "shape": "diamond", "size": 20, "title": "URL: 13.14.15.16"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_4.4.4.4", "label": "\ud83c\udf10 4.4.4.4", "shape": "diamond", "size": 20, "title": "URL: 4.4.4.4"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_4.3.3.3", "label": "\ud83c\udf10 4.3.3.3", "shape": "diamond", "size": 20, "title": "URL: 4.3.3.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_2.1.1.2", "label": "\ud83c\udf10 2.1.1.2", "shape": "diamond", "size": 20, "title": "URL: 2.1.1.2"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_3.3.3.3", "label": "\ud83c\udf10 3.3.3.3", "shape": "diamond", "size": 20, "title": "URL: 3.3.3.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_1.2.3.4", "label": "\ud83c\udf10 1.2.3.4", "shape": "diamond", "size": 20, "title": "URL: 1.2.3.4"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_1.4.4.3", "label": "\ud83c\udf10 1.4.4.3", "shape": "diamond", "size": 20, "title": "URL: 1.4.4.3"}, {"color": "#007AFF", "font": {"color": "white"}, "id": "URL_4.4.47.3", "label": "\ud83c\udf10 4.4.47.3", "shape": "diamond", "size": 20, "title": "URL: 4.4.47.3"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#555555", "from": "test.apk", "to": "Permission_android.permission.VIBRATE"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://android.googlesource.com/toolchain/llvm-project"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://www.w3.org/XML/1998/namespaceNamespacedart-codespacedart-oldspacenew"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.8U"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/belelaritra/Neumorphic_Calculator8U"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.defaultStackTracegetSpanForPosition-9stretch_debugPrintStopwatch"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.htmlb"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/flutter/flutter/issues.Failed"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://www.unicode.org/copyright.html"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/flutter/flutter/issues/2897"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/belelaritra/Neumorphic_Calculatortheme_modepropertyValueVerticalDragGestureRecognizer.joinIndexedSlotErrorSummaryThe"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://api.flutter.dev/flutter/material/Scaffold/of.html8Uv."}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://developer.android.com/guide/topics/permissions/overview"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/belelaritra/Neumorphic_Calculator8Uzutheme_mode8U"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://fontello.comCopyright"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://www.w3.org/XML/1998/namespacehttp"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/flutter/flutter/issues.Could"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://api.flutter.dev/flutter/material/Scaffold/of.html_depth"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.html8U"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://schemas.android.com/apk/res/androiditem"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://fontello.com"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://schemas.android.com/apk/res/androidhttpsintent"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://www.w3.org/2000/xmlns/"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/flutter/flutter/issues.Interrupt"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://www.w3.org/Style/CSS/Test/Fonts/Ahem/"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/dart-lang/sdk/blob/master/runtime/docs/compiler/aot/entry_point_pragma.md"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://github.com/belelaritra/Neumorphic_Calculatordart.mathnavigationRailThemeClosedCaptionToggleiterableSemanticsFlag.isFocusedlii_doSerialization"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_http://www.w3.org/2000/xmlns/isolates///../JOIN_TYPE"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_https://www.microsoft.com/en-us/research/wp-content/uploads/2005/01/p1000-loop.pdf"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_5.5.5.5"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_3.9.7.5"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_9.8.7.5"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_47.9.47.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_4.4.4.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_9.7.6.5"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_9.10.11.12"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_5.6.7.8"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_1.1.1.1"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_8.8.8.9"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_47.4.4.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_17.18.19.20"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_13.14.15.16"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_4.4.4.4"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_4.3.3.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_2.1.1.2"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_3.3.3.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_1.2.3.4"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_1.4.4.3"}, {"arrows": "to", "color": "#555555", "from": "test.apk", "to": "URL_4.4.47.3"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -8000,
+            "springConstant": 0.001,
+            "springLength": 150
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

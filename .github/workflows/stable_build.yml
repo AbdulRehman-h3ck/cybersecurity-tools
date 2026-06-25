@@ -1,0 +1,36 @@
+name: Stable Build EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install Stable Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install -r android-threat-intel-v2/requirements.txt
+
+    - name: Build EXE with PyInstaller
+      run: |
+        cd android-threat-intel-v2
+        pyinstaller --noconsole --onefile --collect-all androguard --collect-all customtkinter --collect-all matplotlib --collect-all yara --collect-all pyvis --collect-all g4f --name "APK_Forensic_Lab" gui_tool.py
+
+    - name: Save Executable Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Stable-APK-Forensic-Lab-EXE
+        path: android-threat-intel-v2/dist/APK_Forensic_Lab.exe
